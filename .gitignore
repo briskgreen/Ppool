@@ -1,12 +1,10 @@
 # Object files
 *.o
-<<<<<<< HEAD
 
 # Executables
 gatway
 gatway.c
 Makefile
-=======
 *.ko
 *.obj
 *.elf
@@ -34,4 +32,3 @@ Makefile
 *.i*86
 *.x86_64
 *.hex
->>>>>>> 36a9958ead063be7cb77774e0982b164a990072c
