@@ -9,7 +9,10 @@ pool_w *ppool_queue_init(void)
 
 	head=malloc(sizeof(pool_w));
 	if(!head)
+	{
+		ppool_errno=PE_QUEUE_NO_MEM;
 		return NULL;
+	}
 
 	head->len=0;
 	head->head=NULL;
@@ -22,11 +25,17 @@ pool_node *ppool_queue_new(ppool_work task,void *arg,int priority)
 	pool_node *node;
 
 	if(priority < 0)
+	{
+		ppool_errno=PE_PRIORITY_ERROR;
 		return NULL;
+	}
 
 	node=malloc(sizeof(pool_node));
 	if(node == NULL)
+	{
+		ppool_errno=PE_QUEUE_NODE_NO_MEM;
 		return NULL;
+	}
 
 	node->task=task;
 	node->arg=arg;

@@ -1,6 +1,7 @@
 #ifndef _PPOOL_QUEUE_H
 #define _PPOOL_QUEUE_H
 
+#include "ppool_errno.h"
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
