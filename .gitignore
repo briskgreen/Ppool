@@ -1,7 +1,37 @@
 # Object files
 *.o
+<<<<<<< HEAD
 
 # Executables
 gatway
 gatway.c
 Makefile
+=======
+*.ko
+*.obj
+*.elf
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+>>>>>>> 36a9958ead063be7cb77774e0982b164a990072c
