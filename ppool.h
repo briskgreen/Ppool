@@ -12,6 +12,7 @@ typedef char pbool;
 typedef struct
 {
 	int pool_max_num; //线程池最大线程数量
+	int rel_num; //线程池中实例线程数
 	pool_w *head; //线程头
 	pthread_t *id; //线程id
 
