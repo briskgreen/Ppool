@@ -16,6 +16,7 @@ pool_t *ppool_init(int pool_max_num)
 		return NULL;
 	}
 
+	//创建任务队列
 	head=ppool_queue_init();
 	if(!head)
 	{
@@ -24,6 +25,7 @@ pool_t *ppool_init(int pool_max_num)
 	}
 
 	pool->pool_max_num=pool_max_num;
+	pool->rel_num=0;
 	pool->head=head;
 	pool->id=malloc(sizeof(pthread_t)*pool_max_num);
 	if(!pool->id)
@@ -31,15 +33,35 @@ pool_t *ppool_init(int pool_max_num)
 		ppool_errno=PE_THREAD_NO_MEM;
 		free(head);
 		free(pool);
+
 		return NULL;
 	}
 
-	pthread_mutex_init(&pool->ppool_lock);
-	pthread_cond_init(&pool->ppool_cond,NULL);
+	if(pthread_mutex_init(&pool->ppool_lock,NULL) != 0)
+	{
+		ppool_errno=PE_THREAD_MUTEX_ERROR;
+		free(pool->id);
+		free(head);
+		free(pool);
 
+		return NULL;
+	}
+	if(pthread_cond_init(&pool->ppool_cond,NULL) != 0)
+	{
+		ppool_errno=PE_THREAD_COND_ERROR;
+		free(pool->id);
+		free(head);
+		free(pool);
+
+		return NULL;
+	}
+
+	//创建任务
 	for(i=0;i < pool_max_num;++i)
 	{
-		pthread_create(&pool->id[i],NULL,(void *)ppool_run,pool);
+		if(pthread_create(&pool->id[i],NULL,(void *)ppool_run,pool) == 0)
+			++pool->rel_num;
+
 		pthread_detach(pool->id[i]);
 	}
 
@@ -54,9 +76,10 @@ pbool ppool_add(pool_t *pool,pool_task *task)
 	if(!node)
 		return PFALSE;
 
-	pthread_mutex_lock(&pool->ppool_lock);
+	while(pthread_mutex_lock(&pool->ppool_lock) != 0);
 	ppool_queue_add(pool->head,node);
-	pthread_mutex_unlock(&pool->ppool_lock);
+	while(pthread_cond_broadcast(&pool->ppool_cond) != 0);
+	while(pthread_mutex_unlock(&pool->ppool_lock) != 0);
 
 	return PTRUE;
 }
@@ -71,13 +94,27 @@ void ppool_destroy(pool_t *pool)
 		pthread_cancel(pool->id[i]);
 	free(pool->id);
 
-	pthread_mutex_destroy(&pool->ppool_mux);
 	pthread_mutex_destroy(&pool->ppool_lock);
-	pthread_cond_destroy(&pool->ppool_con);
+	pthread_cond_destroy(&pool->ppool_cond);
 
 	free(pool);
 }
 
-void ppool_run(pool *pool)
+void ppool_run(pool_t *pool)
 {
+	pool_node *task;
+
+	while(1)
+	{
+		while(pthread_mutex_lock(&pool->ppool_lock) != 0);
+		while(pool->head->len <= 0)
+			pthread_cond_wait(&pool->ppool_cond,&pool->ppool_lock);
+		task=ppool_queue_get_task(pool->head);
+		while(pthread_mutex_unlock(&pool->ppool_lock) != 0);
+
+		if(task == NULL) continue;
+		task->task(task->arg);
+
+		free(task);
+	}
 }
