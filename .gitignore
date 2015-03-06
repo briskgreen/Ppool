@@ -4,7 +4,6 @@
 # Executables
 gatway
 gatway.c
-Makefile
 *.ko
 *.obj
 *.elf
