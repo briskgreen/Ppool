@@ -85,6 +85,7 @@ pool_node *ppool_queue_get_task(pool_w *head)
 
 	task=head->head;
 	head->head=head->head->next;
+	--head->len;
 
 	return task;
 }
