@@ -7,17 +7,17 @@ libppool.a:ppool.o ppool_queue.o ppool_errno.o
 	cp libppool.a lib/
 
 libppool.so:ppool.o ppool_queue.o ppool_errno.o
-	gcc -shared -fPIC -o libppool.so ppool.o ppool_queue.o ppool_errno.o -lpthread
+	gcc -O2 -shared -fPIC -o libppool.so ppool.o ppool_queue.o ppool_errno.o -lpthread
 	cp libppool.so lib/
 
 ppool.o:ppool.c ppool.h ppool_queue.h
-	gcc -c ppool.c
+	gcc -O2 -c ppool.c
 
 ppool_queue.o:ppool_queue.c ppool_queue.h ppool_errno.h
-	gcc -c ppool_queue.c
+	gcc -O2 -c ppool_queue.c
 
 ppool_errno.o:ppool_errno.c ppool_errno.h
-	gcc -c ppool_errno.c
+	gcc -O2 -c ppool_errno.c
 
 clean:
 	rm -rfv lib include *.o *.a *.so
