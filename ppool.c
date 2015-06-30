@@ -104,6 +104,7 @@ void ppool_destroy(pool_t *pool)
 	free(pool->id);
 
 	pthread_mutex_destroy(&pool->ppool_lock);
+	pthread_mutex_destroy(&PPOOL_LOCK);
 	pthread_cond_destroy(&pool->ppool_cond);
 
 	free(pool);
