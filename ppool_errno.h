@@ -16,9 +16,9 @@ extern int ppool_errno; //错误代码变量
 #define PE_QUEUE_NODE_NO_MEM -7
 
 //打印错误信息
-void perror(const char *msg);
+void ppool_error(const char *msg);
 
 //根据错误代码代码打印错误信息
-char *pstrerr(int errno);
+char *ppool_strerr(int errno);
 
 #endif

@@ -2,7 +2,7 @@
 
 int ppool_errno=0;
 
-void perror(const char *msg)
+void ppool_error(const char *msg)
 {
 	if(!msg)
 		printf("%s\n",pstrerr(ppool_errno));
@@ -10,7 +10,7 @@ void perror(const char *msg)
 		printf("%s : %s\n",pstrerr(ppool_errno));
 }
 
-char *pstrerr(int errno)
+char *ppool_strerr(int errno)
 {
 	switch(errno)
 	{
@@ -21,9 +21,9 @@ char *pstrerr(int errno)
 		case -2:
 			return "无法为此数量的线程分配足够的内存!";
 		case -3:
-			return "pthread初始化互斥锁失败，请使用perror查看更多信息!";
+			return "pthread初始化互斥锁失败，请使用ppool_error查看更多信息!";
 		case -4:
-			return "pthread初始化条件变量失败，请使用perror查看更多信息!";
+			return "pthread初始化条件变量失败，请使用ppool_error查看更多信息!";
 		case -5:
 			return "无法为任务队列开辟空间!";
 		case -6:
