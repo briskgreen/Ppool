@@ -46,11 +46,20 @@ pool_t *ppool_init(int pool_max_num)
 
 		return NULL;
 	}
+	if(pthread_mutex_init(&PPOOL_LOCK,NULL) != 0)
+	{
+		ppool_errno=PE_THREAD_MUTEX_ERROR;
+		free(pool->id);
+		free(head);
+		pthread_mutex_destroy(&pool->ppool_lock);
+		free(pool);
+	}
 	if(pthread_cond_init(&pool->ppool_cond,NULL) != 0)
 	{
 		ppool_errno=PE_THREAD_COND_ERROR;
 		free(pool->id);
 		free(head);
+		pthread_mutex_destroy(&pool->ppool_lock);
 		free(pool);
 
 		return NULL;

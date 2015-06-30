@@ -9,6 +9,11 @@ typedef char pbool;
 #define PTRUE 1
 #define PFALSE 0
 
+pthread_mutex_t PPOOL_LOCK;
+
+#define ppool_entry() pthread_mutex_lock(&PPOOL_LOCK)
+#define ppool_leave() pthread_mutex_unlock(&PPOOL_LOCK)
+
 typedef struct
 {
 	int pool_max_num; //线程池最大线程数量
